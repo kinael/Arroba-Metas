@@ -17,7 +17,7 @@ function addGoal() {
     completedSteps: 0
   };
 
-  goals.unshift(goal); // Adiciona as metas mais recentes no topo.
+  goals.unshift(goal);
   goalInput.value = '';
   saveGoals();
   renderGoals();
