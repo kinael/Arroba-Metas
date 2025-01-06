@@ -1,11 +1,12 @@
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
+let filterStatus = 'all'; // Status atual do filtro
 
 function addGoal() {
   const goalInput = document.getElementById('goalInput');
   const goalName = goalInput.value.trim();
 
   if (goalName === '') {
-    alert('Please enter a goal.');
+    alert('Por favor, escreva uma meta.');
     return;
   }
 
@@ -22,11 +23,25 @@ function addGoal() {
   renderGoals();
 }
 
+function filterGoals(status) {
+  filterStatus = status;
+  renderGoals();
+}
+
 function renderGoals() {
   const goalsList = document.getElementById('goalsList');
   goalsList.innerHTML = '';
 
-  goals.forEach(goal => {
+  const filteredGoals = goals.filter(goal => {
+    if (filterStatus === 'completed') {
+      return goal.steps.length > 0 && goal.completedSteps === goal.steps.length;
+    } else if (filterStatus === 'pending') {
+      return goal.steps.length === 0 || goal.completedSteps < goal.steps.length;
+    }
+    return true; // Retorna todas as metas para o filtro "all"
+  });
+
+  filteredGoals.forEach(goal => {
     const progress = Math.round((goal.completedSteps / goal.steps.length || 0) * 100);
 
     const goalElement = document.createElement('div');
@@ -61,7 +76,7 @@ function renderGoals() {
           <input type="text" class="form-control" placeholder="Escreva uma etapa..." id="stepInput-${goal.id}">
           <button class="btn btn-outline-primary" onclick="addStep(${goal.id})">Nova etapa</button>
         </div>
-        <button class="btn btn-danger btn-sm" onclick="deleteGoal(${goal.id})">Deletar etapa</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteGoal(${goal.id})">Deletar meta</button>
       </div>
       <hr>
     `;
@@ -75,7 +90,7 @@ function addStep(goalId) {
   const stepName = stepInput.value.trim();
 
   if (stepName === '') {
-    alert('Please enter a step.');
+    alert('Por favor, escreva uma etapa.');
     return;
   }
 
@@ -110,7 +125,7 @@ function deleteGoal(goalId) {
 
 function editGoal(goalId) {
   const goal = goals.find(g => g.id === goalId);
-  const newName = prompt('Edit goal name:', goal.name);
+  const newName = prompt('Editar nome da meta:', goal.name);
 
   if (newName !== null && newName.trim() !== '') {
     goal.name = newName.trim();
@@ -122,7 +137,7 @@ function editGoal(goalId) {
 function editStep(goalId, stepId) {
   const goal = goals.find(g => g.id === goalId);
   const step = goal.steps.find(s => s.id === stepId);
-  const newName = prompt('Edit step name:', step.name);
+  const newName = prompt('Editar nome da etapa:', step.name);
 
   if (newName !== null && newName.trim() !== '') {
     step.name = newName.trim();
