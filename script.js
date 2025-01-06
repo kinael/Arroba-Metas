@@ -44,11 +44,14 @@ function renderGoals() {
   filteredGoals.forEach(goal => {
     const progress = Math.round((goal.completedSteps / goal.steps.length || 0) * 100);
 
+    // Adiciona o emoji 🎉 se a meta está 100% concluída
+    const goalTitle = progress === 100 ? `${goal.name} 🎉` : goal.name;
+
     const goalElement = document.createElement('div');
     goalElement.className = 'mb-4';
     goalElement.innerHTML = `
       <div class="d-flex justify-content-between align-items-center">
-        <h5>${goal.name}</h5>
+        <h5>${goalTitle}</h5>
         <div>
           <button class="small-btn" onclick="editGoal(${goal.id})">
             <i class="fa fa-pencil-alt"></i>
