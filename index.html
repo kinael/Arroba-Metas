@@ -11,7 +11,19 @@
 <body>
   <div class="container mt-5">
     <div class="goal-container">
-      <h2 class="text-center">iMetas</h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-center">iMetas</h2>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="filterMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Filtrar metas
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterMenuButton">
+            <li><a class="dropdown-item" href="#" onclick="filterGoals('all')">Todas as metas</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterGoals('completed')">Metas concluídas</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterGoals('pending')">Metas pendentes</a></li>
+          </ul>
+        </div>
+      </div>
       <div class="mb-3">
         <label for="goalInput" class="form-label">Criar nova meta</label>
         <input type="text" id="goalInput" class="form-control" placeholder="Escreva sua nova meta...">
@@ -21,5 +33,6 @@
     </div>
   </div>
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
