@@ -56,3 +56,23 @@ h2 {
   background-color: #d1e7dd;
 }
 
+
+@media (max-width: 576px) {
+  .goal-container {
+    padding: 15px;
+  }
+
+  .d-flex {
+    flex-wrap: wrap;
+  }
+
+  .d-flex .dropdown,
+  .d-flex .form-select {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+  }
+}
