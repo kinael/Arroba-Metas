@@ -4,56 +4,47 @@ body {
 }
 
 .goal-container {
-  margin: 20px auto;
-  max-width: 800px;
   background: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.completed {
-  text-decoration: line-through;
-  color: #6c757d; /* Texto riscado fica cinza */
-}
-
-.small-btn {
-  display: inline-flex;
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-  margin-left: 5px;
-  background-color: transparent;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
-  color: #495057;
-}
-
-.small-btn:hover {
-  background-color: #e9ecef;
-  cursor: pointer;
-}
-
-input[type="checkbox"] {
-  width: 30px;
-  height: 30px;
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .progress-bar {
-  height: 20px;
-  border-radius: 10px;
-  background-color: #e9ecef;
+  background: #e9ecef;
+  border-radius: 5px;
   overflow: hidden;
+  height: 20px;
 }
 
 .progress-bar-inner {
-  height: 100%;
-  background-color: #28a745;
+  background-color: #28a745; /* Verde */
+  color: #ffffff;
+  font-size: 12px;
   text-align: center;
   line-height: 20px;
-  color: #ffffff;
-  font-weight: bold;
-  border-radius: 10px;
-  transition: width 0.3s ease;
+}
+
+.small-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 5px;
+  color: #6c757d;
+}
+
+.small-btn:hover {
+  color: #0d6efd;
+}
+
+.list-group-item.completed {
+  text-decoration: line-through;
+  background-color: #d1e7dd;
 }
