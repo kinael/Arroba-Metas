@@ -42,10 +42,33 @@ function updateCategoryFilter() {
   });
 }
 
+// function filterGoals(status) {
+ //  filterStatus = status;
+//   renderGoals();
+//}
+
 function filterGoals(status) {
   filterStatus = status;
+
+  // Atualiza o texto do botão para refletir o filtro atual
+  const filterButton = document.getElementById('filterMenuButton');
+  switch (status) {
+    case 'all':
+      filterButton.textContent = 'Todas as metas';
+      break;
+    case 'completed':
+      filterButton.textContent = 'Metas concluídas';
+      break;
+    case 'pending':
+      filterButton.textContent = 'Metas pendentes';
+      break;
+    default:
+      filterButton.textContent = 'Filtrar metas';
+  }
+
   renderGoals();
 }
+
 
 function filterByCategory() {
   const categoryFilter = document.getElementById('categoryFilter');
