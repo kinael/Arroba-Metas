@@ -1,6 +1,6 @@
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
 let filterStatus = 'all'; // Status atual do filtro
-let selectedCategory = ''; // Categoria selecionada no filtro
+let selectedCategory = ''; 
 
 function addGoal() {
   const goalInput = document.getElementById('goalInput');
