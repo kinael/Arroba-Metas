@@ -1,30 +1,55 @@
 let goals = JSON.parse(localStorage.getItem('goals')) || [];
 let filterStatus = 'all'; // Status atual do filtro
+let selectedCategory = ''; // Categoria selecionada no filtro
 
 function addGoal() {
   const goalInput = document.getElementById('goalInput');
+  const categoryInput = document.getElementById('categoryInput');
   const goalName = goalInput.value.trim();
+  const categoryName = categoryInput.value.trim();
 
-  if (goalName === '') {
-    alert('Por favor, escreva uma meta.');
+  if (goalName === '' || categoryName === '') {
+    alert('Por favor, escreva a meta e a categoria.');
     return;
   }
 
   const goal = {
     id: Date.now(),
     name: goalName,
+    category: categoryName,
     steps: [],
     completedSteps: 0
   };
 
   goals.unshift(goal);
   goalInput.value = '';
+  categoryInput.value = '';
   saveGoals();
+  updateCategoryFilter();
   renderGoals();
+}
+
+function updateCategoryFilter() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  const categories = [...new Set(goals.map(goal => goal.category))];
+
+  categoryFilter.innerHTML = '<option value="">Todas as categorias</option>';
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    categoryFilter.appendChild(option);
+  });
 }
 
 function filterGoals(status) {
   filterStatus = status;
+  renderGoals();
+}
+
+function filterByCategory() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  selectedCategory = categoryFilter.value;
   renderGoals();
 }
 
@@ -33,19 +58,21 @@ function renderGoals() {
   goalsList.innerHTML = '';
 
   const filteredGoals = goals.filter(goal => {
+    const matchesCategory = selectedCategory === '' || goal.category === selectedCategory;
+
     if (filterStatus === 'completed') {
-      return goal.steps.length > 0 && goal.completedSteps === goal.steps.length;
+      return matchesCategory && goal.steps.length > 0 && goal.completedSteps === goal.steps.length;
     } else if (filterStatus === 'pending') {
-      return goal.steps.length === 0 || goal.completedSteps < goal.steps.length;
+      return matchesCategory && (goal.steps.length === 0 || goal.completedSteps < goal.steps.length);
     }
-    return true; // Retorna todas as metas para o filtro "all"
+
+    return matchesCategory; // Retorna todas as metas para o filtro "all"
   });
 
   filteredGoals.forEach(goal => {
-    const progress = Math.round((goal.completedSteps / goal.steps.length || 0) * 100);
+    const progress = ((goal.completedSteps / goal.steps.length || 0) * 100).toFixed(2);
 
-    // Adiciona o emoji 🎉 se a meta está 100% concluída
-    const goalTitle = progress === 100 ? `${goal.name} 🎉` : goal.name;
+    const goalTitle = progress === '100.00' ? `${goal.name} 🎉` : goal.name;
 
     const goalElement = document.createElement('div');
     goalElement.className = 'mb-4';
@@ -61,6 +88,7 @@ function renderGoals() {
       <div class="progress-bar mt-2">
         <div class="progress-bar-inner" style="width: ${progress}%;">${progress}%</div>
       </div>
+      <p class="mt-2">Categoria: <strong>${goal.category}</strong></p>
       <div class="mt-2">
         <ul class="list-group mb-2">
           ${goal.steps.map(step => `
@@ -123,6 +151,7 @@ function toggleStep(goalId, stepId) {
 function deleteGoal(goalId) {
   goals = goals.filter(g => g.id !== goalId);
   saveGoals();
+  updateCategoryFilter();
   renderGoals();
 }
 
@@ -153,8 +182,6 @@ function saveGoals() {
   localStorage.setItem('goals', JSON.stringify(goals));
 }
 
-// Render the goals on page load
+// Inicializa os filtros e renderiza as metas na página
+updateCategoryFilter();
 renderGoals();
-
-
-
