@@ -1,7 +1,7 @@
 # Arroba@METAS
 
 **Descrição:**
-- **Propósito:** Gerenciador de metas pessoais e/ou profissionais, criado com o intuito de incentivar o usuário a buscar seus objetivos, gerenciando pensamentos e sonhos de forma facilitada. Arroba@METAS oferece uma interface intuitiva, amigável e minimalista, podendo abrangir usuários de todas as idades.
+- **Propósito:** Gerenciador de metas pessoais e/ou profissionais, criado com o intuito de incentivar o usuário a buscar seus objetivos, gerenciando pensamentos e sonhos de forma facilitada. Arroba@METAS oferece uma interface intuitiva, amigável e minimalista, podendo abranger usuários de todas as idades.
 - **Funcionalidades:**
   - Permite que o usuário crie, edite e exclua uma nova meta;
   - Permite que o usuário crie, edite e exclua etapas para cada meta;
