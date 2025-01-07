@@ -57,11 +57,12 @@ h2 {
 }
 
 
-@media (max-width: 576px) {
-  .goal-container {
-    padding: 15px;
-  }
+.dropdown-menu {
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
+@media (max-width: 576px) {
   .d-flex {
     flex-wrap: wrap;
   }
@@ -69,10 +70,15 @@ h2 {
   .d-flex .dropdown,
   .d-flex .form-select {
     margin-bottom: 10px;
-    width: 100%;
+    flex: 1 1 100%;
   }
 
   .dropdown-menu {
-    width: 100%;
+    width: auto; /* Ajusta o tamanho do menu para caber no dropdown */
+  }
+
+  .dropdown-toggle {
+    width: 100%; /* Força o botão a respeitar o tamanho do container */
   }
 }
+
