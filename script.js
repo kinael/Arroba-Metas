@@ -1,15 +1,17 @@
-let goals = JSON.parse(localStorage.getItem('goals')) || [];
-let filterStatus = 'all'; // Status atual do filtro
-let selectedCategory = ''; 
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
+let filterStatus = "all"; 
+let selectedCategory = "";
 
 function addGoal() {
-  const goalInput = document.getElementById('goalInput');
-  const categoryInput = document.getElementById('categoryInput');
+  const goalInput = document.getElementById("goalInput");
+  const categoryInput = document.getElementById("categoryInput");
+  const rewardInput = document.getElementById("rewardInput");
   const goalName = goalInput.value.trim();
   const categoryName = categoryInput.value.trim();
+  const reward = rewardInput.value.trim();
 
-  if (goalName === '' || categoryName === '') {
-    alert('Por favor, escreva a meta e a categoria.');
+  if (goalName === "" || categoryName === "" || reward === "") {
+    alert("Por favor, preencha todos os campos.");
     return;
   }
 
@@ -17,91 +19,99 @@ function addGoal() {
     id: Date.now(),
     name: goalName,
     category: categoryName,
+    reward: reward,
     steps: [],
-    completedSteps: 0
+    completedSteps: 0,
   };
 
   goals.unshift(goal);
-  goalInput.value = '';
-  categoryInput.value = '';
+  goalInput.value = "";
+  categoryInput.value = "";
+  rewardInput.value = "";
   saveGoals();
   updateCategoryFilter();
   renderGoals();
 }
 
 function updateCategoryFilter() {
-  const categoryFilter = document.getElementById('categoryFilter');
-  const categories = [...new Set(goals.map(goal => goal.category))];
+  const categoryFilter = document.getElementById("categoryFilter");
+  const categories = [...new Set(goals.map((goal) => goal.category))];
 
   categoryFilter.innerHTML = '<option value="">Todas as categorias</option>';
-  categories.forEach(category => {
-    const option = document.createElement('option');
+  categories.forEach((category) => {
+    const option = document.createElement("option");
     option.value = category;
     option.textContent = category;
     categoryFilter.appendChild(option);
   });
 }
 
-// function filterGoals(status) {
- //  filterStatus = status;
-//   renderGoals();
-//}
-
 function filterGoals(status) {
   filterStatus = status;
 
-  // Atualiza o texto do botão para refletir o filtro atual
-  const filterButton = document.getElementById('filterMenuButton');
+  const filterButton = document.getElementById("filterMenuButton");
   switch (status) {
-    case 'all':
-      filterButton.textContent = 'Todas as metas';
+    case "all":
+      filterButton.textContent = "Todas as metas";
       break;
-    case 'completed':
-      filterButton.textContent = 'Metas concluídas';
+    case "completed":
+      filterButton.textContent = "Metas concluídas";
       break;
-    case 'pending':
-      filterButton.textContent = 'Metas pendentes';
+    case "pending":
+      filterButton.textContent = "Metas pendentes";
       break;
     default:
-      filterButton.textContent = 'Filtrar metas';
+      filterButton.textContent = "Filtrar metas";
   }
 
   renderGoals();
 }
 
-
 function filterByCategory() {
-  const categoryFilter = document.getElementById('categoryFilter');
+  const categoryFilter = document.getElementById("categoryFilter");
   selectedCategory = categoryFilter.value;
   renderGoals();
 }
 
 function renderGoals() {
-  const goalsList = document.getElementById('goalsList');
-  goalsList.innerHTML = '';
+  const goalsList = document.getElementById("goalsList");
+  goalsList.innerHTML = "";
 
-  const filteredGoals = goals.filter(goal => {
-    const matchesCategory = selectedCategory === '' || goal.category === selectedCategory;
+  const filteredGoals = goals.filter((goal) => {
+    const matchesCategory =
+      selectedCategory === "" || goal.category === selectedCategory;
 
-    if (filterStatus === 'completed') {
-      return matchesCategory && goal.steps.length > 0 && goal.completedSteps === goal.steps.length;
-    } else if (filterStatus === 'pending') {
-      return matchesCategory && (goal.steps.length === 0 || goal.completedSteps < goal.steps.length);
+    if (filterStatus === "completed") {
+      return (
+        matchesCategory &&
+        goal.steps.length > 0 &&
+        goal.completedSteps === goal.steps.length
+      );
+    } else if (filterStatus === "pending") {
+      return (
+        matchesCategory &&
+        (goal.steps.length === 0 || goal.completedSteps < goal.steps.length)
+      );
     }
 
-    return matchesCategory; // Retorna todas as metas para o filtro "all"
+    return matchesCategory;
   });
 
-  filteredGoals.forEach(goal => {
+  filteredGoals.forEach((goal) => {
     const progress = ((goal.completedSteps / goal.steps.length || 0) * 100).toFixed(2);
 
-    const goalTitle = progress === '100.00' ? `${goal.name} 🎉` : goal.name;
+    const rewardText = progress === "100.00" 
+      ? `<span style="color: green; font-style: normal; text-decoration: underline;">${goal.reward} 🎉</span>` 
+      : `<span style="color: gray; font-style: italic;">${goal.reward} (bloqueado)</span>`;
 
-    const goalElement = document.createElement('div');
-    goalElement.className = 'mb-4';
+    const goalElement = document.createElement("div");
+    goalElement.className = "mb-4";
     goalElement.innerHTML = `
       <div class="d-flex justify-content-between align-items-center">
-        <h5>${goalTitle}</h5>
+        <h5>
+          ${goal.name} 
+          ${progress === "100.00" ? '<span style="font-style: italic; color: gray;">(concluída ✅)</span>' : ''}
+        </h5>
         <div>
           <button class="small-btn" onclick="editGoal(${goal.id})">
             <i class="fa fa-pencil-alt"></i>
@@ -112,19 +122,25 @@ function renderGoals() {
         <div class="progress-bar-inner" style="width: ${progress}%;">${progress}%</div>
       </div>
       <p class="mt-2">Categoria: <strong>${goal.category}</strong></p>
+      <p class="mt-2" style="${progress === '100.00' ? 'text-decoration: underline;' : ''}">
+        Recompensa: ${rewardText}
+      </p>
       <div class="mt-2">
         <ul class="list-group mb-2">
-          ${goal.steps.map(step => `
-            <li class="list-group-item d-flex justify-content-between align-items-center ${step.completed ? 'completed' : ''}">
+          ${goal.steps
+            .map(
+              (step) => `
+            <li class="list-group-item d-flex justify-content-between align-items-center ${step.completed ? "completed" : ""}">
               <span>${step.name}</span>
               <div>
-                <input type="checkbox" ${step.completed ? 'checked' : ''} onclick="toggleStep(${goal.id}, ${step.id})">
+                <input type="checkbox" ${step.completed ? "checked" : ""} onclick="toggleStep(${goal.id}, ${step.id})">
                 <button class="small-btn" onclick="editStep(${goal.id}, ${step.id})">
                   <i class="fa fa-pencil-alt"></i>
                 </button>
               </div>
-            </li>
-          `).join('')}
+            </li>`
+            )
+            .join("")}
         </ul>
         <div class="input-group mb-2">
           <input type="text" class="form-control" placeholder="Escreva uma etapa..." id="stepInput-${goal.id}">
@@ -139,72 +155,54 @@ function renderGoals() {
   });
 }
 
+
+
+
+
+
 function addStep(goalId) {
   const stepInput = document.getElementById(`stepInput-${goalId}`);
   const stepName = stepInput.value.trim();
 
-  if (stepName === '') {
-    alert('Por favor, escreva uma etapa.');
+  if (stepName === "") {
+    alert("Por favor, escreva uma etapa.");
     return;
   }
 
-  const goal = goals.find(g => g.id === goalId);
+  const goal = goals.find((g) => g.id === goalId);
   const step = {
     id: Date.now(),
     name: stepName,
-    completed: false
+    completed: false,
   };
 
   goal.steps.push(step);
+  stepInput.value = "";
   saveGoals();
-  stepInput.value = '';
   renderGoals();
 }
 
 function toggleStep(goalId, stepId) {
-  const goal = goals.find(g => g.id === goalId);
-  const step = goal.steps.find(s => s.id === stepId);
+  const goal = goals.find((g) => g.id === goalId);
+  const step = goal.steps.find((s) => s.id === stepId);
+
   step.completed = !step.completed;
 
-  goal.completedSteps = goal.steps.filter(s => s.completed).length;
+  goal.completedSteps = goal.steps.filter((s) => s.completed).length;
   saveGoals();
   renderGoals();
 }
 
 function deleteGoal(goalId) {
-  goals = goals.filter(g => g.id !== goalId);
+  goals = goals.filter((goal) => goal.id !== goalId);
   saveGoals();
-  updateCategoryFilter();
   renderGoals();
 }
 
-function editGoal(goalId) {
-  const goal = goals.find(g => g.id === goalId);
-  const newName = prompt('Editar nome da meta:', goal.name);
-
-  if (newName !== null && newName.trim() !== '') {
-    goal.name = newName.trim();
-    saveGoals();
-    renderGoals();
-  }
-}
-
-function editStep(goalId, stepId) {
-  const goal = goals.find(g => g.id === goalId);
-  const step = goal.steps.find(s => s.id === stepId);
-  const newName = prompt('Editar nome da etapa:', step.name);
-
-  if (newName !== null && newName.trim() !== '') {
-    step.name = newName.trim();
-    saveGoals();
-    renderGoals();
-  }
-}
-
 function saveGoals() {
-  localStorage.setItem('goals', JSON.stringify(goals));
+  localStorage.setItem("goals", JSON.stringify(goals));
 }
 
-// Inicializa os filtros e renderiza as metas na página
+// Inicializar a interface
 updateCategoryFilter();
 renderGoals();
