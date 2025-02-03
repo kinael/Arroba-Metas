@@ -1,23 +1,55 @@
-let taskCounter = 0; 
+let taskCounter = 0;
 
 document.addEventListener("DOMContentLoaded", loadTasks);
+
+// Referências ao modal
+const modal = document.getElementById("noteModal");
+const modalText = document.getElementById("noteText");
+const closeModal = document.querySelector(".close");
+const editNoteBtn = document.getElementById("editNoteBtn");
+let currentTask = null; // Armazena a tarefa atual
+
+// Fechar modal ao clicar no "X"
+closeModal.onclick = function () {
+    modal.style.display = "none";
+};
+
+// Fechar modal ao clicar fora dele
+window.onclick = function (event) {
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+};
 
 function addTask() {
     let taskText = prompt("Digite a tarefa:");
     if (taskText) {
-        let task = createTaskElement(taskText);
+        let taskNote = prompt("Adicione uma nota (opcional):") || "";
+        let task = createTaskElement(taskText, taskNote);
         document.getElementById("task-container").appendChild(task);
         saveTasks();
     }
 }
 
-function createTaskElement(text, id = null, parentId = null) {
+function createTaskElement(text, note = "", id = null, parentId = null) {
     let task = document.createElement("div");
     task.className = "task";
-    task.textContent = text;
     task.id = id || "task-" + taskCounter++;
     task.draggable = true;
     task.ondragstart = drag;
+
+    let taskText = document.createElement("span");
+    taskText.textContent = text;
+    task.appendChild(taskText);
+
+    let noteBtn = document.createElement("button");
+    noteBtn.className = "note-btn";
+    noteBtn.textContent = "📝 Ver Nota";
+    noteBtn.onclick = function () {
+        modalText.value = note; // Exibir nota no textarea
+        modal.style.display = "flex";
+        currentTask = task; // Salvar referência da tarefa atual
+    };
 
     let deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
@@ -27,7 +59,8 @@ function createTaskElement(text, id = null, parentId = null) {
         saveTasks();
     };
 
-    task.appendChild(deleteBtn); 
+    task.appendChild(noteBtn);
+    task.appendChild(deleteBtn);
 
     if (parentId) {
         document.getElementById(parentId).appendChild(task);
@@ -35,6 +68,20 @@ function createTaskElement(text, id = null, parentId = null) {
 
     return task;
 }
+
+// Salvar a edição da nota
+editNoteBtn.onclick = function () {
+    if (currentTask) {
+        let newNote = modalText.value;
+        currentTask.querySelector(".note-btn").onclick = function () {
+            modalText.value = newNote;
+            modal.style.display = "flex";
+            currentTask = currentTask; 
+        };
+        saveTasks();
+        modal.style.display = "none";
+    }
+};
 
 function allowDrop(event) {
     event.preventDefault();
@@ -60,7 +107,9 @@ function saveTasks() {
     document.querySelectorAll(".day").forEach(day => {
         let dayTasks = [];
         day.querySelectorAll(".task").forEach(task => {
-            dayTasks.push({ id: task.id, text: task.textContent.replace("×", "").trim() });
+            let taskText = task.querySelector("span").textContent;
+            let noteText = modalText.value;
+            dayTasks.push({ id: task.id, text: taskText, note: noteText });
         });
         tasksData.push({ dayId: day.id, tasks: dayTasks });
     });
@@ -74,7 +123,8 @@ function loadTasks() {
         let tasksData = JSON.parse(savedTasks);
         tasksData.forEach(dayData => {
             dayData.tasks.forEach(task => {
-                createTaskElement(task.text, task.id, dayData.dayId);
+                let taskElement = createTaskElement(task.text, task.note, task.id, dayData.dayId);
+                document.getElementById(dayData.dayId).appendChild(taskElement);
             });
         });
     }
