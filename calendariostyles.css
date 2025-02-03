@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: Consolas;
     background-color: #f8f9fa;
     text-align: center;
 }
@@ -12,8 +12,8 @@ body {
 }
 
 .day {
-    width: 120px;
-    min-height: 150px;
+    width: 200px; /* Aumentado de 120px para 160px */
+    min-height: 250px; /* Aumentado de 150px para 200px */
     border: 2px solid #007bff;
     padding: 10px;
     background-color: #ffffff;
@@ -24,6 +24,7 @@ body {
     align-items: center;
     gap: 5px;
 }
+
 
 .task {
     background-color: #AFEEEE;
@@ -38,27 +39,37 @@ body {
     white-space: normal;
     overflow: hidden; 
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
-    min-height: 40px;
-    box-sizing: border-box; 
+    min-height: 50px;
+    box-sizing: border-box;
 }
 
-
-
+.note-btn {
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    padding: 3px 6px;
+    margin-top: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
 
 .delete-btn {
     position: absolute;
     top: 3px;
     right: 3px;
-    background-color: transparent;
+    background-color: red;
     border: none;
     color: white;
     font-size: 14px;
     cursor: pointer;
     font-weight: bold;
 }
+
 
 
 .task-container {
@@ -68,3 +79,35 @@ body {
 }
 
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    color: red;
+}
