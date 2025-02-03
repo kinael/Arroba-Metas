@@ -37,6 +37,7 @@ function createTaskElement(text, note = "", id = null, parentId = null) {
     task.id = id || "task-" + taskCounter++;
     task.draggable = true;
     task.ondragstart = drag;
+    task.dataset.note = note; // Armazena a nota na própria tarefa
 
     let taskText = document.createElement("span");
     taskText.textContent = text;
@@ -46,7 +47,7 @@ function createTaskElement(text, note = "", id = null, parentId = null) {
     noteBtn.className = "note-btn";
     noteBtn.textContent = "📝 Ver Nota";
     noteBtn.onclick = function () {
-        modalText.value = note; // Exibir nota no textarea
+        modalText.value = task.dataset.note; // Exibir nota correta
         modal.style.display = "flex";
         currentTask = task; // Salvar referência da tarefa atual
     };
@@ -73,11 +74,7 @@ function createTaskElement(text, note = "", id = null, parentId = null) {
 editNoteBtn.onclick = function () {
     if (currentTask) {
         let newNote = modalText.value;
-        currentTask.querySelector(".note-btn").onclick = function () {
-            modalText.value = newNote;
-            modal.style.display = "flex";
-            currentTask = currentTask; 
-        };
+        currentTask.dataset.note = newNote; // Salva a nota na tarefa específica
         saveTasks();
         modal.style.display = "none";
     }
@@ -108,7 +105,7 @@ function saveTasks() {
         let dayTasks = [];
         day.querySelectorAll(".task").forEach(task => {
             let taskText = task.querySelector("span").textContent;
-            let noteText = modalText.value;
+            let noteText = task.dataset.note || ""; // Pega a nota salva na tarefa
             dayTasks.push({ id: task.id, text: taskText, note: noteText });
         });
         tasksData.push({ dayId: day.id, tasks: dayTasks });
@@ -124,6 +121,7 @@ function loadTasks() {
         tasksData.forEach(dayData => {
             dayData.tasks.forEach(task => {
                 let taskElement = createTaskElement(task.text, task.note, task.id, dayData.dayId);
+                taskElement.dataset.note = task.note; // Garante que a nota correta seja carregada
                 document.getElementById(dayData.dayId).appendChild(taskElement);
             });
         });
