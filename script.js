@@ -2,19 +2,16 @@ let taskCounter = 0;
 
 document.addEventListener("DOMContentLoaded", loadTasks);
 
-// Referências ao modal
 const modal = document.getElementById("noteModal");
 const modalText = document.getElementById("noteText");
 const closeModal = document.querySelector(".close");
 const editNoteBtn = document.getElementById("editNoteBtn");
-let currentTask = null; // Armazena a tarefa atual
+let currentTask = null; 
 
-// Fechar modal ao clicar no "X"
 closeModal.onclick = function () {
     modal.style.display = "none";
 };
 
-// Fechar modal ao clicar fora dele
 window.onclick = function (event) {
     if (event.target === modal) {
         modal.style.display = "none";
@@ -37,8 +34,7 @@ function createTaskElement(text, note = "", id = null, parentId = null) {
     task.id = id || "task-" + taskCounter++;
     task.draggable = true;
     task.ondragstart = drag;
-    task.dataset.note = note; // Armazena a nota na própria tarefa
-
+    task.dataset.note = note; 
     let taskText = document.createElement("span");
     taskText.textContent = text;
     task.appendChild(taskText);
@@ -47,9 +43,9 @@ function createTaskElement(text, note = "", id = null, parentId = null) {
     noteBtn.className = "note-btn";
     noteBtn.textContent = "📝 Ver Nota";
     noteBtn.onclick = function () {
-        modalText.value = task.dataset.note; // Exibir nota correta
+        modalText.value = task.dataset.note;
         modal.style.display = "flex";
-        currentTask = task; // Salvar referência da tarefa atual
+        currentTask = task; 
     };
 
     let deleteBtn = document.createElement("button");
@@ -70,7 +66,6 @@ function createTaskElement(text, note = "", id = null, parentId = null) {
     return task;
 }
 
-// Salvar a edição da nota
 editNoteBtn.onclick = function () {
     if (currentTask) {
         let newNote = modalText.value;
