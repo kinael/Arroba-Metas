@@ -74,11 +74,11 @@ h2 {
   }
 
   .dropdown-menu {
-    width: auto; /* Ajusta o tamanho do menu para caber no dropdown */
+    width: auto; 
   }
 
   .dropdown-toggle {
-    width: 100%; /* Força o botão a respeitar o tamanho do container */
+    width: 100%; 
   }
 }
 
